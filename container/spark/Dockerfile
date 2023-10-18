@@ -1,0 +1,70 @@
+# *******PYTHON BASE IMAGE*******
+FROM python:3.11.2-slim-bullseye as python
+
+# Run installation tasks as root
+USER root
+
+# Project folder name
+ARG PROJECT_FOLDER=/opt/spark-playground
+
+# Keeps Python from generating .pyc files in the container
+ENV PYTHONDONTWRITEBYTECODE=1
+
+# Turns off buffering for easier container logging
+ENV PYTHONUNBUFFERED=1
+
+# Specify the user info for spark_uid
+RUN useradd -d /home/sparkuser -ms /bin/bash sparkuser
+
+# Install Java/procps
+RUN apt-get update && apt-get install -y curl \
+    && apt-get install -y openjdk-17-jdk procps
+
+# Set JAVA_HOME
+ENV JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
+ENV PATH=${JAVA_HOME}/bin:${PATH}
+
+# Set SPARK_HOME
+ENV SPARK_HOME=/usr/local/lib/python3.11/site-packages/pyspark
+ENV PATH=${SPARK_HOME}/bin:${PATH}
+
+
+
+# Install pip requirements
+COPY ./requirements.txt ${PROJECT_FOLDER}/requirements.txt
+RUN python -m pip install --no-cache-dir -r ${PROJECT_FOLDER}/requirements.txt
+
+# Install s3/minio dependencies
+RUN curl https://repo1.maven.org/maven2/org/apache/hadoop/hadoop-aws/3.3.4/hadoop-aws-3.3.4.jar \
+    --output ${SPARK_HOME}/jars/hadoop-aws-3.3.4.jar
+RUN curl https://repo1.maven.org/maven2/com/amazonaws/aws-java-sdk-bundle/1.12.262/aws-java-sdk-bundle-1.12.262.jar \
+    --output ${SPARK_HOME}/jars/aws-java-sdk-bundle-1.12.262.jar
+
+
+# Copy local directory into container app directory
+WORKDIR ${PROJECT_FOLDER}
+COPY . ${PROJECT_FOLDER}
+
+RUN chown -R sparkuser:sparkuser ${PROJECT_FOLDER}
+USER sparkuser
+CMD ["jupyter", "lab", "--ip=0.0.0.0", "--port=8888", "--no-browser", "--allow-root"]
+
+
+#FROM docker.io/bitnami/spark:3.4 as spark
+#
+#USER root
+#
+#RUN apt-get update && apt-get install -y curl
+#
+#RUN curl https://repo1.maven.org/maven2/org/apache/hadoop/hadoop-aws/3.3.4/hadoop-aws-3.3.4.jar \
+#    && curl https://repo1.maven.org/maven2/com/amazonaws/aws-java-sdk-bundle/1.12.262/aws-java-sdk-bundle-1.12.262.jar \
+#    && curl -O https://repo1.maven.org/maven2/io/delta/delta-core_2.13-2.4.0.jar \
+#    && curl -O https://repo1.maven.org/maven2/io/delta/delta-storage-2.4.0.jar \
+#    && mv delta-core_2.13-2.4.0.jar /opt/bitnami/spark/jars \
+#    && mv delta-storage-2.4.0.jar /opt/bitnami/spark/jars \
+#    && mv hadoop-aws-3.3.4.jar /opt/bitnami/spark/jars \
+#    && mv aws-java-sdk-bundle-1.12.262.jar /opt/bitnami/spark/jars
+
+
+
+
