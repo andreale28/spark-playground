@@ -12,7 +12,6 @@ from pyspark.sql.dataframe import DataFrame
 from pyspark.sql.functions import col, regexp_extract, to_date, \
     input_file_name
 
-
 def measure_execution_time(func):
     """Measures the execution time of a function.
 
@@ -382,6 +381,8 @@ class LogETLMethod2(StandardETL):
 
 
 if __name__ == '__main__':
+    factory = {}
+
     app_names = [
         "CHANNEL",
         "KPLUS",
