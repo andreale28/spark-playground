@@ -38,7 +38,7 @@ The initializer sets default values for these parameters and also checks if cert
 
 3. The `StandardETL` class has several methods defined, such as `to_parquet, extract, transform, load, and run`. These methods are meant to be implemented by subclasses of StandardETL.
 
-4. There is another class called `LogETL `that extends` StandardETL` and **overrides** the `load` and `extract` methods. 
+4. There is another class called `LogETL_Method2 `that extends` StandardETL` and **overrides** the `load` and `extract` methods. 
 These methods provide functionality specific to log data extraction and loading.
 
 ## Why?
@@ -47,4 +47,4 @@ I realized that these two shared **a similar ETL pattern plus some specific prop
 which contains a common method or abstract interfaces `StandardETL` class and two methods will be a concrete implementation of `StandardETL`.
 
 ## Update
-Until now, I have completed refactored **method 2**.
+**Method 1** and **Method 2** are implemented
