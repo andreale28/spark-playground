@@ -29,7 +29,7 @@ from pyspark.sql.functions import (
     sum,
 )
 
-from workspaces.Hw4.table_schema import table_path, validated_table_schema
+from workspaces.scripts.table_schema import table_path, validated_table_schema
 
 
 class StandardETL(ABC):
@@ -121,8 +121,6 @@ class StandardETL(ABC):
         column_names = options.get("column_names")
         reported_date = options.get("reported_date")
         validated_table_schema: dict = options.get("validated_table_schema")
-
-        self.get_json_log(spark)
 
         self.etl_bronze_layer(
             spark, partition=partition, validated_table_schema=validated_table_schema
