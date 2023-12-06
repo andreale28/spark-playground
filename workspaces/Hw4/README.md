@@ -38,9 +38,10 @@ The initializer sets default values for these parameters and also checks if cert
 
 3. The `StandardETL` class has several methods defined, such as `to_parquet, extract, transform, load, and run`. These methods are meant to be implemented by subclasses of StandardETL.
 
-4. There is another class called `LogETL_Method2 `that extends` StandardETL` and **overrides** the `load` and `extract` methods. 
+4. There are another classes called `LogETL_Method2 ` and `LogETL_Method1` that extends` StandardETL` and **override** the `load` and `extract` methods. 
 These methods provide functionality specific to log data extraction and loading.
 
+`Credit to AI for helping me write out this explaination`
 ## Why?
 You may ask why I opt to do this direction. Well, it is mostly due to the homework in which we have to refactor 2 different methods but same result. 
 I realized that these two shared **a similar ETL pattern plus some specific properties**. Thus, this is a decent opportunity to use **Factory Pattern**
@@ -48,3 +49,7 @@ which contains a common method or abstract interfaces `StandardETL` class and tw
 
 ## Update
 **Method 1** and **Method 2** are implemented
+
+## Limitation
+Data quality is a must for a pipeline which leads to the fact that `validate` method should be included in `StandardETL`class.
+(I haven't implemented it, yet..)

@@ -1,3 +1,6 @@
 /data/
 /minio/
 /docs/
+/metastore_db/
+/derby.log
+/spark-warehouse/
