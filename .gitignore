@@ -4,3 +4,7 @@
 /metastore_db/
 /derby.log
 /spark-warehouse/
+/.ipynb_checkpoints/
+/workspaces/scripts/README.md
+/container/seatunnel/
+

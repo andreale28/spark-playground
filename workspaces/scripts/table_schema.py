@@ -10,6 +10,7 @@ table_path = {
     "rfm": f"{STORAGE_PATH}/delta/silver/rfm",
 }
 
+
 class BronzeSchema(DataFrameModel):
     Index: StringType() = pa.Field(nullable=True)
     Type: StringType() = pa.Field(nullable=True)

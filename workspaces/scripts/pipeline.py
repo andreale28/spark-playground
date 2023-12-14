@@ -28,6 +28,7 @@ from pyspark.sql.functions import (
     round,
     sum,
 )
+from pyspark.sql.types import StructType, StructField, StringType, LongType
 
 from workspaces.scripts.table_schema import table_path, validated_table_schema
 
@@ -43,7 +44,29 @@ class StandardETL(ABC):
 
     def get_json_log(self, spark: SparkSession):
         json_storage = f"{self.STORAGE_PATH}/{self.JSON_PATH}"
-        return spark.read.json(path=json_storage, pathGlobFilter="*.json").select(
+        schema = StructType(
+            [
+                StructField("_id", StringType(), True),
+                StructField("_index", StringType(), True),
+                StructField("_score", LongType(), True),
+                StructField(
+                    "_source",
+                    StructType(
+                        [
+                            StructField("AppName", StringType(), True),
+                            StructField("Contract", StringType(), True),
+                            StructField("Mac", StringType(), True),
+                            StructField("TotalDuration", LongType(), True),
+                        ]
+                    ),
+                    True,
+                ),
+                StructField("_type", StringType(), True),
+            ]
+        )
+        return spark.read.json(
+            path=json_storage, pathGlobFilter="*.json", schema=schema
+        ).select(
             col("_index").alias("Index"),
             col("_type").alias("Type"),
             col("_id").alias("Id"),
@@ -82,7 +105,9 @@ class StandardETL(ABC):
         compact = options.get("compact", False)
         zorder = options.get("zorder", False)
         zorder_columns = options.get("zorder_columns", None)
-        input_data.write.format("delta").mode("overwrite").save(table_path)
+        input_data.write.format("delta").option("compression", "zstd").mode(
+            "overwrite"
+        ).save(table_path)
         logging.info(f"Saved table into data lake at {table_path}")
         if optimize:
             delta_table = DeltaTable.forPath(spark, table_path)
@@ -146,11 +171,17 @@ class LogETL(StandardETL):
         super().__init__()
 
     def etl_bronze_layer(self, spark: SparkSession, **options):
-        validated_table_schema = options.get("validated_table_schema")
+        # validated_table_schema = options.get("validated_table_schema")
         df = self.get_json_log(spark)
         # self.validate_data(df, validated_table_schema.get("bronze_table"))
         self.publish_data(
-            spark, df, self.TABLE_PATH.get("bronze"), optimize=True, compact=True
+            spark,
+            df,
+            self.TABLE_PATH.get("bronze"),
+            optimize=True,
+            compact=True,
+            zorder=True,
+            zorder_columns=["Contract", "Date"],
         )
         return df
 
@@ -280,7 +311,6 @@ class LogETL(StandardETL):
         self.validate_data(gold_df, validated_table_schema.get("gold_table"))
         self.publish_data(spark, gold_df, self.TABLE_PATH.get("gold"))
 
-
         return gold_df
 
 
@@ -310,7 +340,8 @@ def main():
     start_time = time.time()
     logging.basicConfig(level=logging.INFO)
     spark = (
-        SparkSession.builder.master("spark://spark-master:7077").appName("LogETL")
+        SparkSession.builder.master("spark://spark-master:7077")
+        .appName("LogETL")
         .enableHiveSupport()
         .getOrCreate()
     )
