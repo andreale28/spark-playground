@@ -2,7 +2,7 @@ version: "3.8"
 
 services:
   spark-master:
-#    image: docker.io/bitnami/spark:3.4
+    #    image: docker.io/bitnami/spark:3.4
     build:
       context: ./container/spark
       dockerfile: Dockerfile
@@ -21,7 +21,7 @@ services:
     volumes:
       - ./container/spark/conf/spark-defaults.conf:/opt/bitnami/spark/conf/spark-defaults.conf
       - .:/opt/spark-playground
-#      - ./container/spark/conf/hive-site.xml:/opt/bitnami/spark/conf/hive-site.xml
+    #      - ./container/spark/cn_conf/hive-site.xml:/opt/bitnami/spark/cn_conf/hive-site.xml
     networks:
       - spark-network
 
@@ -32,7 +32,7 @@ services:
       - SPARK_MODE=worker
       - SPARK_MASTER_URL=spark://spark-master:7077
       - SPARK_WORKER_MEMORY=6G
-      - SPARK_WORKER_CORES=2
+      - SPARK_WORKER_CORES=4
       - SPARK_RPC_AUTHENTICATION_ENABLED=no
       - SPARK_RPC_ENCRYPTION_ENABLED=no
       - SPARK_LOCAL_STORAGE_ENCRYPTION_ENABLED=no
@@ -40,35 +40,35 @@ services:
     networks:
       - spark-network
 
-  spark-worker-2:
-    image: docker.io/bitnami/spark:3.4
-    container_name: spark-worker-2
-    environment:
-      - SPARK_MODE=worker
-      - SPARK_MASTER_URL=spark://spark-master:7077
-      - SPARK_WORKER_MEMORY=6G
-      - SPARK_WORKER_CORES=2
-      - SPARK_RPC_AUTHENTICATION_ENABLED=no
-      - SPARK_RPC_ENCRYPTION_ENABLED=no
-      - SPARK_LOCAL_STORAGE_ENCRYPTION_ENABLED=no
-      - SPARK_SSL_ENABLED=no
-    networks:
-      - spark-network
-
-
-#  local-spark:
-#    build:
-#      context: ./container/spark
-#      dockerfile: Dockerfile
-#    container_name: local-spark
-#    ports:
-#      - "8888:8888"
-#      - "4040:4040"
-#    volumes:
-#      - ./container/spark/conf/spark-defaults.conf:/opt/bitnami/spark/conf/spark-defaults.conf
-#      - .:/opt/spark-playground
+#  spark-worker-2:
+#    image: docker.io/bitnami/spark:3.4
+#    container_name: spark-worker-2
+#    environment:
+#      - SPARK_MODE=worker
+#      - SPARK_MASTER_URL=spark://spark-master:7077
+#      - SPARK_WORKER_MEMORY=6G
+#      - SPARK_WORKER_CORES=2
+#      - SPARK_RPC_AUTHENTICATION_ENABLED=no
+#      - SPARK_RPC_ENCRYPTION_ENABLED=no
+#      - SPARK_LOCAL_STORAGE_ENCRYPTION_ENABLED=no
+#      - SPARK_SSL_ENABLED=no
 #    networks:
 #      - spark-network
+
+
+  #  local-spark:
+  #    build:
+  #      context: ./container/spark
+  #      dockerfile: Dockerfile
+  #    container_name: local-spark
+  #    ports:
+  #      - "8888:8888"
+  #      - "4040:4040"
+  #    volumes:
+  #      - ./container/spark/cn_conf/spark-defaults.cn_conf:/opt/bitnami/spark/cn_conf/spark-defaults.cn_conf
+  #      - .:/opt/spark-playground
+  #    networks:
+  #      - spark-network
 
   clickhouse:
     image: bitnami/clickhouse:latest
@@ -158,6 +158,39 @@ services:
       - metadata
     networks:
       - spark-network
+
+  starrocks:
+    image: starrocks/allin1-ubuntu
+    hostname: starrocks-fe
+    container_name: allin1-ubuntu
+    depends_on:
+      - createbuckets
+      - metadata
+      - hive-metastore
+    ports:
+      - "8030:8030"
+      - "8040:8040"
+      - "9030:9030"
+    command:
+      - /bin/bash
+      - -c
+      - |
+        echo "run_mode=shared_data" >> /data/deploy/starrocks/fe/conf/fe.conf
+        echo "aws_s3_endpoint=http://minio:9000" >> /data/deploy/starrocks/fe/conf/fe.conf 
+        echo "aws3_s3_region=us-east-1" >> /data/deploy/starrocks/fe/conf/fe.conf 
+        echo "aws_s3_access_key=minio" >> /data/deploy/starrocks/fe/conf/fe.conf 
+        echo "aws_s3_secret_key=minio123" >> /data/deploy/starrocks/fe/conf/fe.conf 
+        /data/deploy/starrocks/fe/bin/start_fe.sh
+    networks:
+      - spark-network
+    environment:
+      - STARROCKS_ADMIN_USER=sdeuser
+      - STARROCKS_ADMIN_PASSWORD=sdepassword
+      - AWS_ACCESS_KEY_ID=minio
+      - AWS_SECRET_ACCESS_KEY=minio123
+      - AWS_REGION=us-east-1
+
+
 
 networks:
   spark-network:

@@ -96,3 +96,5 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+# spark-submit --driver-memory 4g --executor-memory 6g --executor-cores 2 --properties-file container/spark/conf/spark-defaults.cn_conf workspaces/scripts/ddl.py

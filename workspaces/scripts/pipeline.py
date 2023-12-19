@@ -181,7 +181,7 @@ class LogETL(StandardETL):
             optimize=True,
             compact=True,
             zorder=True,
-            zorder_columns=["Contract", "Date"],
+            zorder_columns=["Contract"],
         )
         return df
 
@@ -213,9 +213,9 @@ class LogETL(StandardETL):
             )
             .withColumns(
                 {
-                    "RecencyScore": ntile(4).over(recency_window),
-                    "FrequencyScore": ntile(4).over(frequency_window),
-                    "MonetaryDurationScore": ntile(4).over(monetary_duration_window),
+                    "RecencyScore": ntile(3).over(recency_window),
+                    "FrequencyScore": ntile(3).over(frequency_window),
+                    "MonetaryDurationScore": ntile(3).over(monetary_duration_window),
                 }
             )
         )

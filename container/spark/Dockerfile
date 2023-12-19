@@ -17,7 +17,7 @@ RUN mkdir -p ${SPARK_HOME}/hms-3.0.0/jars
 COPY conf/hms-3.0.0-deps.txt ${SPARK_HOME}/hms-3.0.0/jars
 RUN cd ${SPARK_HOME}/hms-3.0.0/jars && xargs -n1 -P1 curl --remote-name < hms-3.0.0-deps.txt
 
-#COPY conf/hive-site.xml ${SPARK_HOME}/hms-3.0.0/conf
+#COPY cn_conf/hive-site.xml ${SPARK_HOME}/hms-3.0.0/cn_conf
 #RUN #useradd -d /home/sparkuser -ms /bin/bash sparkuser
 
 COPY ./requirements.txt ${PROJECT_FOLDER}/requirements.txt
