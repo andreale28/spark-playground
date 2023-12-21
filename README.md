@@ -1,5 +1,9 @@
 # SPARK BATCH ETL PIPELINE
 **Data Pipeline Architecture Documentation**
+ <p align="center">
+    <img src="images/arrchitecture.png">
+   </a>
+</p>
 
 ## Overview
 This document provides a comprehensive overview of the data pipeline architecture, designed to ingest, process, and deliver data for a variety of analytical workloads. 
