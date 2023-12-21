@@ -1,7 +1,7 @@
 # SPARK BATCH ETL PIPELINE
 **Data Pipeline Architecture Documentation**
  <p align="center">
-    <img src="images/architecture1.png">
+    <img src="images/architecture.png">
    </a>
 </p>
 
@@ -18,6 +18,7 @@ The pipeline leverages industry-leading technologies to ensure high performance,
 * **Spark** performs ETL operations, adhering to the Medallion architecture for robust data pipeline design.
 * Data is transformed and stored in **Delta Lake** format, ensuring ACID transactions, schema evolution, and time travel capabilities. 
 * Delta Lake _Compaction_ and _Z-Order_ are applied on data to speed up the ETL performance.
+* **Pandera** serves as validation tool to ensure the quality of data.
 
 ### Data Storage and Querying:
 Processed data in Delta Lake format is accessible to multiple query engines for diverse analytical needs:
