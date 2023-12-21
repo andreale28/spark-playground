@@ -160,9 +160,9 @@ services:
       - spark-network
 
   starrocks:
-    image: starrocks/allin1-ubuntu
-    hostname: starrocks-fe
-    container_name: allin1-ubuntu
+    image: starrocks/allin1-ubuntu:3.2-latest
+    hostname: starrocks
+    container_name: starrocks
     depends_on:
       - createbuckets
       - metadata
@@ -171,16 +171,6 @@ services:
       - "8030:8030"
       - "8040:8040"
       - "9030:9030"
-    command:
-      - /bin/bash
-      - -c
-      - |
-        echo "run_mode=shared_data" >> /data/deploy/starrocks/fe/conf/fe.conf
-        echo "aws_s3_endpoint=http://minio:9000" >> /data/deploy/starrocks/fe/conf/fe.conf 
-        echo "aws3_s3_region=us-east-1" >> /data/deploy/starrocks/fe/conf/fe.conf 
-        echo "aws_s3_access_key=minio" >> /data/deploy/starrocks/fe/conf/fe.conf 
-        echo "aws_s3_secret_key=minio123" >> /data/deploy/starrocks/fe/conf/fe.conf 
-        /data/deploy/starrocks/fe/bin/start_fe.sh
     networks:
       - spark-network
     environment:
