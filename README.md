@@ -1,7 +1,7 @@
 # SPARK BATCH ETL PIPELINE
 **Data Pipeline Architecture Documentation**
  <p align="center">
-    <img src="images/arrchitecture.png">
+    <img src="images/architecture1.png">
    </a>
 </p>
 
