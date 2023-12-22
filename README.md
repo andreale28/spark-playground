@@ -7,24 +7,23 @@
 </p>
 
 <!-- TOC -->
-
 * [SPARK BATCH ETL PIPELINE](#spark-batch-etl-pipeline)
-    * [Overview](#overview)
-    * [Architecture Explanation](#architecture-explanation)
-        * [Data Ingestion](#data-ingestion)
-        * [Data Processing](#data-processing)
-        * [Data Storage and Querying](#data-storage-and-querying)
-        * [Metadata Management](#metadata-management)
-        * [Key Features and Benefits](#key-features-and-benefits)
-    * [Data Processing Detail](#data-processing-detail)
-        * [Log Data and Multi-hop Architecture](#log-data-and-multi-hop-architecture)
-        * [Coding Pattern](#coding-pattern)
-        * [Data validation](#data-validation)
-    * [Reproducing pipeline](#reproducing-pipeline)
-    * [Note](#note)
-        * [On Clickhouse](#on-clickhouse)
-        * [On Starrocks](#on-starrocks)
-
+  * [Overview](#overview)
+  * [Architecture Explanation](#architecture-explanation)
+    * [Data Ingestion](#data-ingestion)
+    * [Data Processing](#data-processing)
+    * [Data Storage and Querying](#data-storage-and-querying)
+    * [Metadata Management](#metadata-management)
+    * [Key Features and Benefits](#key-features-and-benefits)
+  * [Data Processing Detail](#data-processing-detail)
+    * [Log Data and Multi-hop Architecture](#log-data-and-multi-hop-architecture)
+    * [Coding Pattern](#coding-pattern)
+    * [Data validation](#data-validation)
+  * [Reproducing pipeline](#reproducing-pipeline)
+  * [Note](#note)
+    * [On Hive Metastore](#on-hive-metastore)
+    * [On Clickhouse](#on-clickhouse)
+    * [On Starrocks](#on-starrocks)
 <!-- TOC -->
 
 ## Overview
